@@ -23,3 +23,7 @@ Newmu's [Theano Tutorials](https://github.com/Newmu/Theano-Tutorials).
 * TensorFlow 1.0 alpha
 * Numpy
 * matplotlib
+
+线性回归(Linear Regression)
+[参考这里:不带公式的机器学习算法整理](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)
+[零基础入门深度学习](https://www.zybuluo.com/hanbingtao/note/433855)
