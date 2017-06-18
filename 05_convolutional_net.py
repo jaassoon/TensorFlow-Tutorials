@@ -23,12 +23,16 @@ def model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden):
     # 忽略边缘(padding=’VALID’)：将多出来的边缘直接省去。
     # 保留边缘(padding=’SAME’)：将特征图的变长用0填充为2的倍数，然后再池化（一般使用这种方式）。
     # padding='SAME'表示通过填充0，使得输入和输出的形状一致。[参考这里](http://www.jeyzhang.com/tensorflow-learning-notes-2.html)
-    # TODO 输入28*28矩阵，经过3*3的滤波器，得到14*14矩阵? # （28-3+2*1)/2+1=14 W2=(W1-F+2P)/S+1
+    # 输入28*28矩阵，经过3*3的滤波器，得到14*14矩阵? # （28-3+2*1)/2+1=14 W2=(W1-F+2P)/S+1
     l1a = tf.nn.relu(tf.nn.conv2d(X, w,                       # l1a shape=(?, 28, 28, 32)
                         strides=[1, 1, 1, 1], padding='SAME'))
     
     # Pooling(池化)层主要的作用是下采样，通过去掉Feature Map中不重要的样本，进一步减少参数数量。Pooling的方法很多，
     # 最常用的是Max Pooling(最大池化技术)。Max Pooling实际上就是在n*n的样本中取最大值，作为采样后的样本值
+    # 池化函数可以逐渐降低输入表示的空间尺度。特别地，池化:
+    # 使输入表示(特征维度)变得更小，并且⺴络中的参数和计算的数量更加可控的减小，因此，可以控制过拟合 使⺴络对于输入图像中更小的变化、
+    # 冗余和变换变得不变性(输入的微小冗余将不会改变池化的输出——因为我们在局部邻域中使用了最大化/平均值的操作。 帮助我们获取图像最大程度
+    # 上的尺度不变性(准确的词是“不变性”)。它非常的强大，因为我们可以检测图像中的物体，无论它们位置在哪里
     # max_pool(value, ksize, strides, padding, data_format="NHWC", name=None):
     # TODO ksize和strides如何确定？
     # 步长设置为2，使得矩阵变为14*14
@@ -38,31 +42,45 @@ def model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden):
     # 为了减少过拟合程度，在输出层之前应用dropout技术（即丢弃某些神经元的输出结果）。我们创建一个placeholder来表示一个神经元的
     # 输出在dropout时不被丢弃的概率。Dropout能够在训练过程中使用，而在测试过程中不使用。TensorFlow中的tf.nn.dropout操作能够
     # 利用mask技术处理各种规模的神经元输出。
+    # Dropout的好处，每次丢掉随机的数据，让神经网络每次都学习到更多，但也需要知道，这种方式只在我们有的训练数据比较少时很有效
     # dropout(x, level, noise_shape=None, seed=None):
     # Sets entries in `x` to zero at random, while scaling the entire tensor.
+    # With probability keep_prob, outputs the input element scaled up by 1 / keep_prob, otherwise outputs 0. 
+    # The scaling is so that the expected sum is unchanged.
+    # 输出的非0元素是原来的 “1/keep_prob” 倍
+    # p_keep_conv or p_keep_prob(probability)保留概率
+    # keep_prob是保留概率，即我们要保留的RELU的结果所占比例，
     l1 = tf.nn.dropout(l1, p_keep_conv)
 
+    # w2 = init_weights([3, 3, 32, 64]) # 从之前的32个特征值中，每个再产生64个特征值
     l2a = tf.nn.relu(tf.nn.conv2d(l1, w2,                     # l2a shape=(?, 14, 14, 64)
                         strides=[1, 1, 1, 1], padding='SAME'))
 
-    # 输入14*14矩阵，经过3*3的滤波器，得到7*7矩阵? # （14-3+2*1)/2+1=7
+    # 输入14*14矩阵，经过3*3的滤波器，得到7*7矩阵 # （14-3+2*1)/2+1=7
     l2 = tf.nn.max_pool(l2a, ksize=[1, 2, 2, 1],              # l2 shape=(?, 7, 7, 64)
                         strides=[1, 2, 2, 1], padding='SAME')
+
+    # p_keep_conv: 0.8, p_keep_hidden: 0.5
     l2 = tf.nn.dropout(l2, p_keep_conv)
 
+    # 从之前的64个特征值中，每个再产生128个特征值
     l3a = tf.nn.relu(tf.nn.conv2d(l2, w3,                     # l3a shape=(?, 7, 7, 128)
                         strides=[1, 1, 1, 1], padding='SAME'))
 
-    # 输入7*7矩阵，经过3*3的滤波器，得到4*4矩阵? # （7-3+2*1)/2+1=4
+    # 输入7*7矩阵，经过3*3的滤波器，得到4*4矩阵 # （7-3+2*1)/2+1=4
     l3 = tf.nn.max_pool(l3a, ksize=[1, 2, 2, 1],              # l3 shape=(?, 4, 4, 128)
                         strides=[1, 2, 2, 1], padding='SAME')
 
+    # l3 为4*4矩阵，将其reshape成2048的矩阵？ 128组4*4矩阵的全连接网络FC为128*4*4矩阵 
     l3 = tf.reshape(l3, [-1, w4.get_shape().as_list()[0]])    # reshape to (?, 2048)
     l3 = tf.nn.dropout(l3, p_keep_conv)
 
+    # w4 FC将产生625个输出：第一个隐藏层：由2048个输入产生625个输出
     l4 = tf.nn.relu(tf.matmul(l3, w4))
+    # p_keep_hidden 全连接网络隐藏层使用的保留概率。
     l4 = tf.nn.dropout(l4, p_keep_hidden)
 
+    # output层：对625个输入产生10个输出 
     pyx = tf.matmul(l4, w_o)
     return pyx
 
@@ -97,11 +115,13 @@ w_o = init_weights([625, 10])         # FC 625 inputs, 10 outputs (labels)
 
 p_keep_conv = tf.placeholder("float")
 p_keep_hidden = tf.placeholder("float")
+# p_keep_conv: 0.8, p_keep_hidden: 0.5
 py_x = model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden)
 
 # 交叉熵cross_entropy softmax_cross_entropy_with_logits
 # [对交叉熵的论述博文](http://colah.github.io/posts/2015-09-Visual-Information/)
 # 损失函数
+# tf.reduce_mean 沿着指定维度求平均值。最终结果为压缩到该维度的矢量。不指定维度，则结果为单个值。
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=py_x, labels=Y))
 # RMSPropOptimizer 优化算法
 # Optimizer that implements the RMSProp algorithm
