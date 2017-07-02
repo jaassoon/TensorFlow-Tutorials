@@ -70,3 +70,7 @@ logs/
 
 #ipython notebook
 .ipynb_checkpoints/
+
+.project
+.pydevproject
+.settings/
