@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf-8
 import numpy as np
 # A tensor's rank is its number of dimensions. 
 # 3 # a rank 0 tensor; this is a scalar with shape [] #just value, no rank, rank=0
@@ -35,7 +37,7 @@ w = tf.constant(w)
 
 with tf.Session() as sess:
   # they all produce the same result as numpy above
-  # print(tf.constant(vec).eval()) 		# TypeError: List of Tensors when single Tensor expected
+  print(tf.constant(vec).eval()) 		# TypeError: List of Tensors when single Tensor expected
   # reference:http://blog.csdn.net/lenbow/article/details/52152766
 
   # print(sess.run(tf.rank(vec))) # 1
@@ -82,9 +84,3 @@ with tf.Session() as sess:
   # Note tf.multiply is equivalent to "*"
   # print((tf.reduce_sum(tf.expand_dims(a,-1) * w, axis=0)).eval())
   # print((tf.reduce_sum(a * tf.transpose(w), axis=1)).eval())
-
-
-
-
-
-
