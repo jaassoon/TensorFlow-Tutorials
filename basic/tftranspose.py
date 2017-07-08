@@ -1,29 +1,20 @@
 import numpy as np
 import tensorflow as tf
-# reduction 简单粗暴的说就是，n 维的数据中，把某一个维度上这一序列的数缩减到一个（比如求它们的和或者平均值），这样就降低了一个维度，所以叫 reduce，
-# 比如 map-reduce 也差不多是这个意思。上面 凡心 的图已经很清楚了，目前这个 reduction_indices 参数改名叫 axis ，这样就直白多了，代表 reduce 
-# 是沿着哪个轴的方向进行的。
-
+# shape(2,)
 vec = np.array([
-			  20, 50
+			  20.0, 50.0
 			 ])
+# shape(2,2)
 a = np.array([
 			  [20.0, 5.0],
 			  [15.0, 10.0]
 			 ])
+# shape(2,2)
 w = np.array([[2.0, 1.0], 
 			  [1.0, 4.0]
 			 ])
 
 with tf.Session() as sess:
-  # reference:https://www.zhihu.com/question/51325408
-
-  # print (tf.multiply(tf.expand_dims(a,-1), w).eval()) # [[[ 40.  20.]  [  5.  20.]][[ 30.  15.][ 10.  40.]]]
-  # print((tf.reduce_sum(tf.multiply(tf.expand_dims(a,-1), w), axis=0)).eval()) # [[ 70.  35.][ 15.  60.]]
-  # print((tf.reduce_sum(tf.multiply(tf.expand_dims(a,-1), w), axis=1)).eval()) # [[45 40][40 55]]
-  # print((tf.reduce_sum(tf.multiply(tf.expand_dims(a,-1), w), axis=2)).eval()) # [[60 25][45 50]]
-  # ----------------------------------------------
-
   # reference:http://www.jianshu.com/p/00ab12bc357c
   tf.transpose(a, perm = None, name = 'transpose')
 

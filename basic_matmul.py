@@ -20,7 +20,7 @@ w = np.array([[2.0, 1.0],
 			  [1.0, 4.0]
 			 ])
 
-# print(np.dot(a, w))
+print(np.dot(a, w))
 # [ 2.6  3. ] # plain nice old matix multiplication n x (n, m) -> m
 # print(np.sum(np.expand_dims(a, -1) * w , axis=0))
 # equivalent result [2.6, 3]
