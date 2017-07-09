@@ -1,4 +1,4 @@
-2.1 线性回归(Linear Regression)[参考这里](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)
+#### 2.1 线性回归(Linear Regression)[参考这里](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)
 
 　　线性回归问题，目的在于得到一个线性模型，使得尽可能的能够让给定的输入能够准确的预测出对应的输出。可以表示为，对于训练数据集D，
 其每个样本x(i)由多个属性所描述，然后我们试图得到函数模型y=h(x)，让y(i)≈h(x(i))，然后可以对任意的新样本输入都能给出连续的输入出值，
@@ -10,7 +10,7 @@ J(θ)=12∑i(h(x(i))−y(i))2=12∑i(θ⊤x(i)−y(i))2
 
 　　然后我们就是要通过训练样本来调整θ，使得J(θ)最小化（1/2为了求导方便）。最常用的方法有：梯度下降法、最小二乘法。
 
-2.2 逻辑回归(Logistic Regression)
+#### 2.2 逻辑回归(Logistic Regression)
 
 　　逻辑回归其本质还是在于线性回归，只是对之前无约束的线性输出做了一个映射g(z)，对于sigmoid函数输出范围为[0,1]，对tanh函数为[-1,1]，
 下面假设以sigmoid函数为例，可得
@@ -22,7 +22,10 @@ J(θ)=∑iy(i)log(hθ(x(i)))+(1−y(i))log(1−hθ(x(i)))
 
 　　其用梯度下降法计算同上面的线性回归是一样的。
 
-2.3 Softmax回归
+#### 2.3 Softmax回归
 
 　　逻辑回归只能用于二分类的情况，而Softmax更像其在多分类情况下的推广，在使用中，如果目标的分类是多分类互斥的，那么用Softmax，否则可以为每个分类
 建立一个逻辑回归分类器。
+
+[参考这里:不带公式的机器学习算法整理](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)
+[零基础入门深度学习](https://www.zybuluo.com/hanbingtao/note/433855)

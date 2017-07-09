@@ -6,7 +6,8 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 
 def init_weights(shape):
-    return tf.Variable(tf.random_normal(shape, stddev=0.01)) #按正态分布产生随机值
+    # 按正态分布产生随机值
+    return tf.Variable(tf.random_normal(shape, stddev=0.01)) 
 
 
 def model(X, w):
