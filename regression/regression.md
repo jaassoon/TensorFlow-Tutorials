@@ -27,5 +27,5 @@ J(θ)=∑iy(i)log(hθ(x(i)))+(1−y(i))log(1−hθ(x(i)))
 　　逻辑回归只能用于二分类的情况，而Softmax更像其在多分类情况下的推广，在使用中，如果目标的分类是多分类互斥的，那么用Softmax，否则可以为每个分类
 建立一个逻辑回归分类器。
 
-[参考这里:不带公式的机器学习算法整理](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)
+[参考这里:不带公式的机器学习算法整理](https://taozj.org/201604/conclusion-of-machine-learning-algorithm.html)  
 [零基础入门深度学习](https://www.zybuluo.com/hanbingtao/note/433855)
