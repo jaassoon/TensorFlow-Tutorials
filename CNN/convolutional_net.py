@@ -85,8 +85,13 @@ def model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden):
     return pyx
 
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+# trX <tf.Tensor 'Const_4:0' shape=(55000, 784) dtype=float32>
+# trY <tf.Tensor 'Const_5:0' shape=(55000, 10) dtype=float64>
+# teX <tf.Tensor 'Const_3:0' shape=(10000, 784) dtype=float32>
+# teY <tf.Tensor 'Const_1:0' shape=(10000, 10) dtype=float64>
 trX, trY, teX, teY = mnist.train.images, mnist.train.labels, mnist.test.images, mnist.test.labels
 
+# https://www.tensorflow.org/api_docs/python/tf/reshape
 # 为了使得图片与计算层匹配，我们首先reshape输入图像x为4维的tensor，第2、3维对应图片的宽和高，最后一维对应颜色通道的数目。（？第1维为什么是-1？）
 # 通道为1，表示灰度图； 通道为3，表示红绿蓝三色图。
 # pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64]) # -1 表示每次抓取的数据量将会基于样本的数量动态计算。
@@ -96,7 +101,12 @@ trX, trY, teX, teY = mnist.train.images, mnist.train.labels, mnist.test.images, 
 # (`pool2` channels) features, so we want the `features` dimension to have a value
 # of 7 * 7 * 64 (3136 in total). The output tensor, `pool2_flat`, has shape
 # <code>[<em>batch_size</em>, 3136]</code>.
+
+# trX <tf.Tensor 'Const_4:0' shape=(55000, 28, 28, 1) dtype=float32>
+# trX[0] <tf.Tensor 'Const_6:0' shape=(28, 28, 1) dtype=float32>
 trX = trX.reshape(-1, 28, 28, 1)  # 28x28x1 input img
+# <tf.Tensor 'Const_6:0' shape=(28, 28, 1) dtype=float32>
+# trY <tf.Tensor 'Const_5:0' shape=(10000, 28, 28, 1) dtype=float32>
 teX = teX.reshape(-1, 28, 28, 1)  # 28x28x1 input img
 
 X = tf.placeholder("float", [None, 28, 28, 1])
@@ -105,10 +115,13 @@ Y = tf.placeholder("float", [None, 10])
 # 卷积层将要计算出32个特征映射(feature map)，对每个3 * 3的patch。它的权值tensor的大小为[3, 3, 1, 32]. 前两维是patch的大小，
 # 第三维是输入通道的数目，最后一维是输出通道的数目。我们对每个输出通道加上了偏置(bias)。
 # 32 表示将通过正态分布随机产生32个滤波器，从而产生32个特征。
-w = init_weights([3, 3, 1, 32])       # 3x3x1 conv, 32 outputs  计算出32个特征映射(feature map)
+# 3*3矩阵，理论上可以产生2^9个矩阵组合，即512个滤波器
+# 3x3x1 conv, 32 outputs  计算出32个特征映射(feature map)
+w = init_weights([3, 3, 1, 32])       
 
 # 为了使得网络有足够深度，我们重复堆积一些相同类型的层。第二层将会有64个特征，对应每个3 * 3的patch。
-w2 = init_weights([3, 3, 32, 64])     # 3x3x32 conv, 64 outputs  计算出64个特征映射(feature map)
+# 3x3x32 conv, 64 outputs  计算出64个特征映射(feature map)
+w2 = init_weights([3, 3, 32, 64])     
 w3 = init_weights([3, 3, 64, 128])    # 3x3x64 conv, 128 outputs
 w4 = init_weights([128 * 4 * 4, 625]) # FC 128 * 4 * 4 inputs, 625 outputs
 w_o = init_weights([625, 10])         # FC 625 inputs, 10 outputs (labels)
@@ -138,7 +151,9 @@ with tf.Session() as sess:
     tf.global_variables_initializer().run()
 
     for i in range(100):
-        training_batch = zip(range(0, len(trX), batch_size), # batch_size=128 每次训练抓取的数据量
+        print("i= ",i)
+        # batch_size=128 每次训练抓取的数据量
+        training_batch = zip(range(0, len(trX), batch_size), 
                              range(batch_size, len(trX)+1, batch_size))
         for start, end in training_batch:
             sess.run(train_op, feed_dict={X: trX[start:end], Y: trY[start:end],
@@ -146,9 +161,14 @@ with tf.Session() as sess:
 
         test_indices = np.arange(len(teX)) # Get A Test Batch
         np.random.shuffle(test_indices)
+        # test_indices <tf.Tensor 'Const_7:0' shape=(256,) dtype=int64>
         test_indices = test_indices[0:test_size]
 
         print(i, np.mean(np.argmax(teY[test_indices], axis=1) ==
                          sess.run(predict_op, feed_dict={X: teX[test_indices],
                                                          p_keep_conv: 1.0,
                                                          p_keep_hidden: 1.0})))
+        # 0 0.97265625
+        # 1 0.9921875
+        # 2 0.98828125
+        # 3 0.984375
