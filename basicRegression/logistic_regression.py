@@ -34,6 +34,12 @@ predict_op = tf.argmax(py_x, 1) # at predict time, evaluate the argmax of the lo
 # 因此最大值1所在的索引位置就是类别标签，
 # accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float")) 取平均值
 # Launch the graph in a session
+# 0 0.8842
+# 1 0.8977
+# 2 0.904
+# 3 0.9072
+# 4 0.9101
+# 5 0.9104
 with tf.Session() as sess:
     # you need to initialize all variables
     tf.global_variables_initializer().run()

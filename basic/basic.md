@@ -1,9 +1,9 @@
-#### for debug
+##### for debug
 tf.shape();  
 tf.size();  
 tf.constant();  
 
-#### 矩阵乘法的解释[参考这里](https://www.zhihu.com/question/21351965)
+##### 矩阵乘法的解释[参考这里](https://www.zhihu.com/question/21351965)
 在左边的这个矩阵的每一行，都代表了一种价目表；在右边的矩阵的每一列，都代表了一种做饭方式。那么所有可能的组合所最终产生的花费，则在结果矩阵中表示出来了。
 它只有在第一個矩陣的列數（column）和第二個矩陣的行數（row）相同時才有定義。
 
@@ -13,11 +13,11 @@ easy_install virtualenv
 
 sudo easy_install pip
 
-#Installed /Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg
+##### Installed /Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg
 
 sudo pip install --upgrade virtualenv
 
-#Requirement already up-to-date: virtualenv in /Library/Python/2.7/site-packages/virtualenv-15.1.0-py2.7.egg
+##### Requirement already up-to-date: virtualenv in /Library/Python/2.7/site-packages/virtualenv-15.1.0-py2.7.egg
 
 
 virtualenv --system-site-packages -p python3 /Users/jason/tensorflow
@@ -70,9 +70,9 @@ where
 . We then convert the evidence tallies into our predicted probabilities 
  using the "softmax" function:
 
-# loss 损失函数
+##### loss 损失函数
 loss = tf.reduce_sum(tf.square(linear_model - y)) # sum of the squares
-# optimizer 优化器
+##### optimizer 优化器
 optimizer = tf.train.GradientDescentOptimizer(0.01)
 train = optimizer.minimize(loss) #目标： 令损失最小
 tf.contrib.learn is a high-level TensorFlow library that simplifies the mechanics of machine learning, including the following:

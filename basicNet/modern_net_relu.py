@@ -8,8 +8,8 @@ from tensorflow.examples.tutorials.mnist import input_data
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
 
-
-def model(X, w_h, w_h2, w_o, p_keep_input, p_keep_hidden): # this network is the same as the previous one except with an extra hidden layer + dropout
+# this network is the same as the previous one except with an extra hidden layer + dropout
+def model(X, w_h, w_h2, w_o, p_keep_input, p_keep_hidden): 
     X = tf.nn.dropout(X, p_keep_input)
     h = tf.nn.relu(tf.matmul(X, w_h))
 
@@ -40,6 +40,12 @@ train_op = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
 predict_op = tf.argmax(py_x, 1)
 
 # Launch the graph in a session
+# 0 0.9367
+# 1 0.9644
+# 2 0.969
+# 3 0.9753
+# 4 0.9762
+# 5 0.9764
 with tf.Session() as sess:
     # you need to initialize all variables
     tf.global_variables_initializer().run()

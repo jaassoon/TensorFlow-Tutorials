@@ -73,6 +73,12 @@ session_conf = tf.ConfigProto()
 session_conf.gpu_options.allow_growth = True
 
 # Launch the graph in a session
+# 0 0.703125
+# 1 0.890625
+# 2 0.875
+# 3 0.9140625
+# 4 0.93359375
+# 5 0.921875
 with tf.Session(config=session_conf) as sess:
     # you need to initialize all variables
     tf.global_variables_initializer().run()

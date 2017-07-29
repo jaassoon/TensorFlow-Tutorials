@@ -8,7 +8,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
 
-
+# sigmoid函数为值域在0到1之间的光滑函数，当需要观察输入信号数值上微 小的变化时，与阶梯函数相比，平滑函数(比如Sigmoid函数)的表现更好。
 def model(X, w_h, w_o):
     h = tf.nn.sigmoid(tf.matmul(X, w_h)) # this is a basic mlp, think 2 stacked logistic regressions
     return tf.matmul(h, w_o) # note that we dont take the softmax at the end because our cost fn does that for us
@@ -30,6 +30,12 @@ train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost) # construct an
 predict_op = tf.argmax(py_x, 1)
 
 # Launch the graph in a session
+# 0 0.6829
+# 1 0.8229
+# 2 0.8622
+# 3 0.8798
+# 4 0.8884
+# 5 0.8933
 with tf.Session() as sess:
     # you need to initialize all variables
     tf.global_variables_initializer().run()
