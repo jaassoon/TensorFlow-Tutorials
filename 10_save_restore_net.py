@@ -69,7 +69,8 @@ with tf.Session() as sess:
     start = global_step.eval() # get last global_step
     print("Start from:", start)
 
-    for i in range(start, 100):
+    for i in range(start, 3):
+    # for i in range(start, 100):
         for start, end in zip(range(0, len(trX), 128), range(128, len(trX)+1, 128)):
             sess.run(train_op, feed_dict={X: trX[start:end], Y: trY[start:end],
                                           p_keep_input: 0.8, p_keep_hidden: 0.5})

@@ -74,3 +74,4 @@ logs/
 .project
 .pydevproject
 .settings/
+ckpt_dir/
